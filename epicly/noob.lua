@@ -497,6 +497,7 @@ local BiMode = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].Creat
         ["Name"] = "FunnyIndicator",
         ["Function"] = function(callback)
                 if callback then
+				createwarning("Callback", "CallBack Works", 5)
                 old = debug.getupvalue(bedwars["DamageIndicator"],10,{Create})
                 debug.setupvalue(bedwars["DamageIndicator"],10,{
                     Create = function(self,obj,...)
