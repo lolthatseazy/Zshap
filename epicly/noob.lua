@@ -495,9 +495,8 @@ local BiMode = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].Creat
     local Enabled = false
     local FunnyIndicator = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
         ["Name"] = "FunnyIndicator",
-        ["Callback"] = function(Callback)
-            Enabled = Callback
-            if Enabled then
+        ["Function"] = function(callback)
+                if callback then
                 old = debug.getupvalue(bedwars["DamageIndicator"],10,{Create})
                 debug.setupvalue(bedwars["DamageIndicator"],10,{
                     Create = function(self,obj,...)
@@ -516,5 +515,7 @@ local BiMode = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].Creat
                 })
                 old = nil
             end
-        end
+        end,
+	["Default"] = false,
+	["HoverText"] = "ok"
     })
