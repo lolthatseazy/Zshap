@@ -1,16 +1,65 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until shared.GuiLibrary
 local GuiLibrary = shared.GuiLibrary
+local bedwars = {}
 local ScriptSettings = {}
 local UIS = game:GetService("UserInputService")
 local COB = function(tab, argstable) 
     return GuiLibrary["ObjectsThatCanBeSaved"][tab.."Window"]["Api"].CreateOptionsButton(argstable)
 end
 
+local players = game:GetService("Players")
+local textservice = game:GetService("TextService")
+local repstorage = game:GetService("ReplicatedStorage")
+local lplr = players.LocalPlayer
+local lighting = game:GetService("Lighting")
+local cam = workspace.CurrentCamera
+workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+	cam = (workspace.CurrentCamera or workspace:FindFirstChild("Camera") or Instance.new("Camera"))
+end)
+local targetinfo = shared.VapeTargetInfo
+local collectionservice = game:GetService("CollectionService")
+local uis = game:GetService("UserInputService")
+local mouse = lplr:GetMouse()
+local bedwarsblocks = {}
+local blockraycast = RaycastParams.new()
+blockraycast.FilterType = Enum.RaycastFilterType.Whitelist
+local getfunctions
+local oldchar
+local oldcloneroot
+local matchState = 0
+local kit = ""
+local antivoidypos = 0
+local kills = 0
+local beds = 0
+local reported = 0
+local lagbacks = 0
+local otherlagbacks = 0
+local matchstatetick = 0
+local lagbackevent = Instance.new("BindableEvent")
+local allowspeed = true
+local antivoiding = false
 
 function createwarning(name,text,seconds)
     local frame = GuiLibrary["CreateNotification"](name, text, seconds, "assets/WarningNotification.png")
 end
+local function getremote(tab)
+	for i,v in pairs(tab) do
+		if v == "Client" then
+			return tab[i + 1]
+		end
+	end
+	return ""
+end
+local Client = require(repstorage.TS.remotes).default.Client
+local InventoryUtil = require(repstorage.TS.inventory["inventory-util"]).InventoryUtil
+local KnitClient = debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6)
+
+		bedwars = {
+			["DamageController"] = KnitClient.Controllers.DamageController,
+			["DamageIndicator"] = KnitClient.Controllers.DamageIndicatorController.spawnDamageIndicator,
+			["DamageIndicatorController"] = KnitClient.Controllers.DamageIndicatorController
+        }
 
 VapePrivate = COB("Blatant", {
 	["Name"] = "Invisibility",
