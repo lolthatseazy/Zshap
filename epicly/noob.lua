@@ -13,7 +13,7 @@ function createwarning(name,text,seconds)
 end
 
 VapePrivate = COB("Blatant", {
-	["Name"] = "Invisibility2",
+	["Name"] = "Invisibility1",
 	["Function"] = function(callback)
 		if callback then
 			VapePrivate["ToggleButton"](false)
