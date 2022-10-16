@@ -567,5 +567,116 @@ local BiMode = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].Creat
             end
         end,
 	["Default"] = false,
-	["HoverText"] = "Fix 2 added bedwars modules"
+	["HoverText"] = "Funny Damage Indicator"
+    })
+
+local ui
+    spawn(function()
+        ui = Instance.new("ScreenGui",game:GetService("CoreGui"))
+        ui.Name = "BetterFlyUI"
+        ui.Enabled = false
+        if syn then syn.protect_gui(ui) end
+        local label = Instance.new("TextLabel")
+        label.TextSize = 16
+        label.Position = UDim2.new(0.4404,0,0.4700,0)
+        label.Size = UDim2.new(0.1181,0,0.1374,0)
+        label.BackgroundColor3 = Color3.fromRGB(255,255,255)
+        label.BackgroundTransparency = 1
+        label.Text = "Safe\nStuds: 0\nY: 0\nTime: 0"
+        label.TextColor3 = Color3.fromRGB(65,255,65)
+        label.Parent = ui
+    end)
+    local velo
+    local part
+    local clone
+    local Enabled = false
+    local BetterFly = Tabs["Blatant"]:CreateToggle({
+        ["Name"] = "FunnyFlyV2",
+        ["Callback"] = function(Callback)
+            Enabled = Callback
+            if Enabled then
+                spawn(function()
+                    local char = lplr.Character
+                    local starttick = tick()
+                    local startpos = char:FindFirstChild("HumanoidRootPart").Position
+                    ui.Enabled = true
+                    char.Archivable = true
+                    clone = char:Clone()
+                    velo = Instance.new("BodyVelocity")
+                    velo.MaxForce = Vector3.new(9e9,9e9,9e9)
+                    velo.Parent = char:FindFirstChild("HumanoidRootPart")
+                    clone.Parent = game:GetService("Workspace")
+                    cam.CameraSubject = clone:FindFirstChild("Humanoid")
+                    part = Instance.new("Part")
+                    part.Anchored = true
+                    part.Size = Vector3.new(10,1,10)
+                    part.Transparency = 1
+                    part.CFrame = clone:FindFirstChild("HumanoidRootPart").CFrame - Vector3.new(0,5,0)
+                    part.Parent = game:GetService("Workspace")
+                    for i,v in pairs(char:GetChildren()) do
+                        if string.lower(v.ClassName):find("part") and v.Name ~= "HumanoidRootPart" then
+                            v.Transparency = 1
+                        end
+                        if v:IsA("Accessory") then
+                            v:FindFirstChild("Handle").Transparency = 1
+                        end
+                    end
+                    char:FindFirstChild("Head"):FindFirstChild("face").Transparency = 1
+                    spawn(function()
+                        while task.wait() do
+                            if not Enabled then
+                                local studs = (startpos - char:FindFirstChild("HumanoidRootPart").Position).Magnitude
+                                local time_ = math.abs(starttick - tick())
+                                CreateNotification("BetterFly","Flew "..math.floor(studs).." Studs in "..time_.." Seconds!",5)
+                                return
+                            end
+                            local studs = (startpos - char:FindFirstChild("HumanoidRootPart").Position).Magnitude
+                            local Y = char:FindFirstChild("HumanoidRootPart").Position.Y
+                            local calctime = math.abs(starttick - tick())
+                            if isnetworkowner(char:FindFirstChild("HumanoidRootPart")) then
+                                ui.TextLabel.TextColor3 = Color3.fromRGB(65,255,65)
+                                ui.TextLabel.Text = "Safe\nStuds: "..math.floor(studs).."\nY: "..math.floor(Y).."\nTime: "..math.floor(calctime)
+                            else
+                                ui.TextLabel.TextColor3 = Color3.fromRGB(255,65,65)
+                                ui.TextLabel.Text = "Unsafe\nStuds: "..math.floor(studs).."\nY: "..math.floor(Y).."\nTime: "..math.floor(calctime)
+                            end
+                        end
+                    end)
+                    spawn(function()
+                        while task.wait() do
+                            if not Enabled then return end
+                            for i = 2,30,2 do
+                                task.wait(0.01)
+                                if not Enabled then return end
+                                part.CFrame = CFrame.new(clone:FindFirstChild("HumanoidRootPart").CFrame.X,part.CFrame.Y,clone:FindFirstChild("HumanoidRootPart").CFrame.Z)
+                                clone:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(char:FindFirstChild("HumanoidRootPart").CFrame.X,clone:FindFirstChild("HumanoidRootPart").CFrame.Y,char:FindFirstChild("HumanoidRootPart").CFrame.Z)
+                                clone:FindFirstChild("HumanoidRootPart").Rotation = char:FindFirstChild("HumanoidRootPart").Rotation
+                                if char:FindFirstChild("Humanoid").MoveDirection.Magnitude > 0 then
+                                    velo.Velocity = lplr.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * char:FindFirstChild("Humanoid").WalkSpeed + Vector3.new(0,25 + i,0)
+                                else
+                                    velo.Velocity = Vector3.new(0,25 + i,0)
+                                end
+                            end
+                        end
+                    end)
+                end)
+            else
+                for i,v in pairs(lplr.Character:GetChildren()) do
+                    if string.lower(v.ClassName):find("part") and v.Name ~= "HumanoidRootPart" then
+                        v.Transparency = 0
+                    end
+                    if v:IsA("Accessory") then
+                        v:FindFirstChild("Handle").Transparency = 0
+                    end
+                end
+                lplr.Character:FindFirstChild("Head"):FindFirstChild("face").Transparency = 0
+                cam.CameraSubject = lplr.Character:FindFirstChild("Humanoid")
+                task.delay(0.1, function() velo:Destroy() end)
+                velo.Velocity = Vector3.new(0,-100,0)
+                velo:Destroy()
+                part:Destroy()
+                clone:Destroy()
+                ui.Enabled = false
+            end
+        end
     })
