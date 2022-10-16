@@ -13,7 +13,7 @@ function createwarning(name,text,seconds)
 end
 
 VapePrivate = COB("Blatant", {
-	["Name"] = "Invisibility1",
+	["Name"] = "Invisibility",
 	["Function"] = function(callback)
 		if callback then
 			VapePrivate["ToggleButton"](false)
@@ -518,5 +518,5 @@ local BiMode = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].Creat
             end
         end,
 	["Default"] = false,
-	["HoverText"] = "ok"
+	["HoverText"] = "Fix 1 please work yay"
     })
