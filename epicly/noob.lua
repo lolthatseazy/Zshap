@@ -567,5 +567,5 @@ local BiMode = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].Creat
             end
         end,
 	["Default"] = false,
-	["HoverText"] = "Fix 1 please work yay"
+	["HoverText"] = "Fix 2 added bedwars modules"
     })
